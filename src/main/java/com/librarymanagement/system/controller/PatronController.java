@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -21,25 +24,44 @@ public class PatronController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Patron> getPatronById(@PathVariable Long id) {
-        Patron patron = patronService.getPatronById(id).orElseThrow(() -> new ResourceNotFoundException("Patron not found for this id :: " + id));
-        return ResponseEntity.ok().body(patron);
+    public ResponseEntity<Patron> getPatronById(@PathVariable @NotNull @Positive Long id) {
+        try {
+            Patron patron = patronService.getPatronById(id).orElseThrow(() -> new ResourceNotFoundException("Patron not found for this id :: " + id));
+            return ResponseEntity.ok().body(patron);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
-    public Patron addPatron(@RequestBody Patron patron) {
-        return patronService.addPatron(patron);
+    public ResponseEntity<Object> addPatron(@Valid @RequestBody Patron patron) {
+        try {
+            Patron createdPatron = patronService.addPatron(patron);
+            return ResponseEntity.ok(createdPatron);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Patron> updatePatron(@PathVariable Long id, @RequestBody Patron patronDetails) {
-        Patron updatedPatron = patronService.updatePatron(id, patronDetails);
-        return ResponseEntity.ok(updatedPatron);
+    public ResponseEntity<Object> updatePatron(@PathVariable @NotNull @Positive Long id, @Valid @RequestBody Patron patronDetails) {
+        try {
+            Patron updatedPatron = patronService.updatePatron(id, patronDetails);
+            return ResponseEntity.ok(updatedPatron);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePatron(@PathVariable Long id) {
-        patronService.deletePatron(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deletePatron(@PathVariable @NotNull @Positive Long id) {
+        try {
+            patronService.deletePatron(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

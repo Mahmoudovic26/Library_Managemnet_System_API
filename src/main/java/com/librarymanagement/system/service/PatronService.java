@@ -23,11 +23,13 @@ public class PatronService {
     }
 
     public Patron addPatron(Patron patron) {
+        validatePatronDetails(patron);
         return patronRepository.save(patron);
     }
 
     public Patron updatePatron(Long id, Patron patronDetails) {
         Patron patron = patronRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patron not found for this id :: " + id));
+        validatePatronDetails(patronDetails);
         patron.setName(patronDetails.getName());
         patron.setContactInformation(patronDetails.getContactInformation());
         return patronRepository.save(patron);
@@ -36,5 +38,11 @@ public class PatronService {
     public void deletePatron(Long id) {
         Patron patron = patronRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patron not found for this id :: " + id));
         patronRepository.delete(patron);
+    }
+
+    private void validatePatronDetails(Patron patron) {
+        if (patron.getName() == null || patron.getContactInformation() == null) {
+            throw new IllegalArgumentException("Patron name and contact information cannot be null.");
+        }
     }
 }
