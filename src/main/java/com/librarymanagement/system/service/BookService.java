@@ -3,6 +3,7 @@ package com.librarymanagement.system.service;
 import com.librarymanagement.system.entity.Book;
 import com.librarymanagement.system.exception.ResourceNotFoundException;
 import com.librarymanagement.system.repository.BookRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +23,12 @@ public class BookService {
     public Optional<Book> getBookById(Long id) {
         return bookRepository.findById(id);
     }
-
+    @Transactional
     public Book addBook(Book book) {
         validateBookDetails(book);
         return bookRepository.save(book);
     }
-
+    @Transactional
     public Book updateBook(Long id, Book bookDetails) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book not found for this id :: " + id));
         validateBookDetails(bookDetails);

@@ -3,6 +3,7 @@ package com.librarymanagement.system.service;
 import com.librarymanagement.system.entity.Patron;
 import com.librarymanagement.system.exception.ResourceNotFoundException;
 import com.librarymanagement.system.repository.PatronRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,12 @@ public class PatronService {
     public Optional<Patron> getPatronById(Long id) {
         return patronRepository.findById(id);
     }
-
+    @Transactional
     public Patron addPatron(Patron patron) {
         validatePatronDetails(patron);
         return patronRepository.save(patron);
     }
-
+    @Transactional
     public Patron updatePatron(Long id, Patron patronDetails) {
         Patron patron = patronRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patron not found for this id :: " + id));
         validatePatronDetails(patronDetails);

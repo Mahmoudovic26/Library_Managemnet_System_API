@@ -7,6 +7,7 @@ import com.librarymanagement.system.exception.ResourceNotFoundException;
 import com.librarymanagement.system.repository.BookRepository;
 import com.librarymanagement.system.repository.BorrowingRecordRepository;
 import com.librarymanagement.system.repository.PatronRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class BorrowingService {
 
     @Autowired
     private PatronRepository patronRepository;
-
+    @Transactional
     public BorrowingRecord borrowBook(Long bookId, Long patronId) {
         validateBookAndPatronIds(bookId, patronId);
 
@@ -36,7 +37,7 @@ public class BorrowingService {
 
         return borrowingRecordRepository.save(borrowingRecord);
     }
-
+    @Transactional
     public BorrowingRecord returnBook(Long bookId, Long patronId) {
         validateBookAndPatronIds(bookId, patronId);
 
