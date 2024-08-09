@@ -169,7 +169,8 @@ This command will execute all the tests and provide a summary of the results.
 ## Optional Features
 
 The API is designed with the following optional features in mind:
-
+- **Logging**: Aspect-Oriented Programming (AOP) can be used for logging method calls, exceptions, and performance metrics.
+- **Caching**: Spring's caching mechanisms can be utilized to improve performance by caching frequently accessed data.
 - **Transaction Management**: Declarative transaction management is implemented using Spring's `@Transactional` annotation to ensure data integrity.
 
 ## Conclusion
